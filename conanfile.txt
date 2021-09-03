@@ -1,0 +1,8 @@
+# Move to build folder and run conan install .
+[requires]
+glm/0.9.9.8
+yaml-cpp/0.7.0
+
+[generators]
+cmake_find_package
+cmake_paths
