@@ -190,3 +190,5 @@ $RECYCLE.BIN/
 *.un~
 Session.vim
 .netrwhist
+
+cmake-build-debug/
