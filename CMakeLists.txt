@@ -12,6 +12,11 @@ include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
 find_package(yaml-cpp)
 find_package(glm REQUIRED)
+find_package(lua REQUIRED)
+find_package(sol2 REQUIRED)
+
+set(LUA_BUILD_AS_DLL 1)
+set(SOL_ALL_SAFETIES_ON 1)
 
 find_package(Qt6 COMPONENTS
         Core
@@ -30,6 +35,8 @@ target_link_libraries(GraphicsFromScratchQT
         Qt::Widgets
         glm::glm
         yaml-cpp::yaml-cpp
+        lua::lua
+        sol2::sol2
         )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

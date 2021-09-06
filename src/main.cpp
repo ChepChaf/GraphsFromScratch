@@ -6,7 +6,6 @@
 #include "Image.h"
 #include "Scene.h"
 #include "Sphere.h"
-#include "RaytracingAlgorithm.h"
 #include "SceneLoader.h"
 
 constexpr int width = 800;

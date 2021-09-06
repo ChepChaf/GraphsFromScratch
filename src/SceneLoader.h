@@ -15,6 +15,6 @@ public:
     static Scene *loadScene(const std::string& sceneFile);
     static std::vector<std::string> availableScenes();
 
-    static Object *parseObject(YAML::Node node1);
+    static Sphere *parseObject(YAML::Node node1);
 };
 

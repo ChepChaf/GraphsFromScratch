@@ -4,6 +4,7 @@
 
 #include "SceneLoader.h"
 #include "Sphere.h"
+#include "FileUtils.h"
 
 #include <algorithm>
 #include <yaml-cpp/yaml.h>
@@ -37,11 +38,11 @@ Scene *SceneLoader::loadScene(const std::string &sceneFile)
 
         auto objectsNode = sceneConfig["objects"];
 
-        std::vector<Object*> objects;
+        std::vector<Sphere> objects;
         for (auto&& it : objectsNode)
         {
             auto object = parseObject(it.second);
-            objects.push_back(object);
+            objects.push_back(*object);
         }
 
         scene->objects = objects;
@@ -54,21 +55,12 @@ Scene *SceneLoader::loadScene(const std::string &sceneFile)
 
 std::vector<std::string> SceneLoader::availableScenes()
 {
-    std::vector<std::string> files;
-
-    for (const auto& entry : fs::directory_iterator(path))
-    {
-        std::string path = entry.path();
-        if (path.ends_with(".scene"))
-        {
-            files.push_back(path);
-        }
-    }
+    auto files = FileUtils::getFilesIn(path, ".scene");
 
     return files;
 }
 
-Object *SceneLoader::parseObject(YAML::Node value)
+Sphere *SceneLoader::parseObject(YAML::Node value)
 {
     auto type = value["type"].as<std::string>();
 

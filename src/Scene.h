@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "Object.h"
+#include "Sphere.h"
 
 struct Scene
 {
@@ -18,7 +19,7 @@ struct Scene
     float tMin;
     float tMax;
 
-    std::vector<Object*> objects;
+    std::vector<Sphere> objects;
 
     glm::vec3 canvasToViewPort(int i, int i1, int i2, int i3);
 };

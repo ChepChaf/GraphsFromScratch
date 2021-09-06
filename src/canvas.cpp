@@ -1,8 +1,9 @@
 #include <iostream>
+#include <thread>
 #include "canvas.h"
 #include "ui_canvas.h"
 #include "SceneLoader.h"
-#include "RaytracingAlgorithm.h"
+#include "ShaderLoader.h"
 
 Canvas::Canvas(QWidget *parent, int width, int height) :
     QMainWindow(parent),
@@ -40,6 +41,7 @@ Canvas::Canvas(QWidget *parent, int width, int height) :
     connect(ui->scenesList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
             SLOT(sceneListItemChanged(QListWidgetItem*)));
 
+    ShaderLoader::init();
     auto files = SceneLoader::availableScenes();
     for (auto sceneFile : files)
     {
@@ -52,7 +54,10 @@ Canvas::Canvas(QWidget *parent, int width, int height) :
 
     if (scene != nullptr)
     {
-        showScene(scene, new RaytracingAlgorithm());
+        auto shaderFiles = ShaderLoader::availableShaders();
+
+        auto algorithm = ShaderLoader::loadShader(shaderFiles[0]);
+        showScene(scene, algorithm);
     }
 }
 
@@ -90,10 +95,7 @@ void Canvas::showScene(Scene *scene, RenderingAlgorithm *algorithm)
 
 void Canvas::projectionPlaneValueChanged(int value)
 {
-    currentScene->projectionPlaneDistance = value;
 
-
-    updateScene();
 }
 
 void Canvas::updateScene()
@@ -101,16 +103,15 @@ void Canvas::updateScene()
     if (currentScene == nullptr)
         return;
 
+    auto renderedImg = currentAlgorithm->render(*currentScene, width, height);
+
     Image img(width, height);
 
-    for (int x = -width/2; x < width/2; x++)
+    for (int x = -width/2, i = 0; x < width/2; x++)
     {
-        for (int y = -height/2 + 1; y <= height/2; y++)
+        for(int y = -height/2; y < height/2; y++, i++)
         {
-            auto D = currentScene->canvasToViewPort(x, y, width, height);
-            auto color = currentAlgorithm->render(*currentScene, D);
-
-            img.PutPixel(x, y, color);
+            img.PutPixel(x, y, renderedImg[i]);
         }
     }
 
@@ -120,50 +121,36 @@ void Canvas::updateScene()
 void Canvas::cameraXValueChanged(double value)
 {
     currentScene->cameraOrigin.x = value;
-
-    updateScene();
 }
 
 void Canvas::cameraYValueChanged(double value)
 {
     currentScene->cameraOrigin.y = value;
-
-    updateScene();
 }
 
 void Canvas::cameraZValueChanged(double value)
 {
     currentScene->cameraOrigin.z = value;
-
-    updateScene();
 }
 
 void Canvas::canvasWidthValueChanged(double value)
 {
     currentScene->canvasSize.x = value;
-
-    updateScene();
 }
 
 void Canvas::canvasHeightValueChanged(double value)
 {
     currentScene->canvasSize.y = value;
-
-    updateScene();
 }
 
 void Canvas::tMinValueChanged(double value)
 {
     currentScene->tMin = value;
-
-    updateScene();
 }
 
 void Canvas::tMaxValueChanged(double value)
 {
     currentScene->tMax = value;
-
-    updateScene();
 }
 
 void Canvas::sceneListItemChanged(QListWidgetItem *current)

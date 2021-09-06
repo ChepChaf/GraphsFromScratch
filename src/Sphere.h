@@ -11,9 +11,10 @@
 
 class Sphere : public Object
 {
+public:
     float radius = 0.0f;
     glm::vec3 center = { 0.0f, 0.0f, 0.0f };
-public:
+
     Sphere(
             glm::vec3 center = {0.0f, 0.0f, 0.0f},
             float radius = 0.0f,
